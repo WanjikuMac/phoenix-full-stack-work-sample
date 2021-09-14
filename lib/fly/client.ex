@@ -230,6 +230,76 @@ defmodule Fly.Client do
     end
   end
 
+  def fetch_status(name, config) do
+    """
+    query($name: String!) {
+              appstatus:app(name: $name) {
+                    id
+                    name
+                    deployed
+                    status
+                    hostname
+                    version
+                    appUrl
+                    organization {
+                      slug
+                    }
+              deploymentStatus {
+                id
+                status
+                version
+                description
+                placedCount
+                promoted
+                desiredCount
+                healthyCount
+                unhealthyCount
+              }
+              allocations(showCompleted: true) {
+                id
+                idShort
+                version
+                latestVersion
+                status
+                desiredStatus
+                totalCheckCount
+                passingCheckCount
+                warningCheckCount
+                criticalCheckCount
+                createdAt
+                updatedAt
+                canary
+                region
+                restarts
+                healthy
+                privateIP
+                taskName
+                checks {
+                  status
+                  output
+                  name
+                }
+              }
+            }
+      }
+    """
+    |> perform_query(%{name: name}, config, :fetch_app)
+    |> handle_response()
+    |> case do
+      {:ok, %{"appstatus" => app_status}} ->
+        Logger.info("app status: #{inspect(app_status)}")
+        {:ok, app_status}
+
+      {:error, _reason} = error ->
+        error
+
+      other ->
+        Logger.error("Unexpected result from fetch_status. Response: #{inspect(other)}")
+
+        {:error, "Failed to fetch app"}
+    end
+  end
+
   def fetch_current_user(config) do
     """
       query {
