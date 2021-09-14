@@ -157,19 +157,23 @@
                                 </tr>
                               </thead>
                               <tbody class="bg-white divide-y divide-gray-200">
-                                <%= for pg <- @app["processGroups"] do %>
                                   <tr>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                      <%= pg["name"] %>
+                                      <%= @app_status["name"] %>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                      <%= pg["regions"] %>
+                                      <%= @app_status["organization"]["slug"] %>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                      <%= @app_status["version"] %>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                      <%= @app_status["status"] %>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                      <%= pg["vmSize"]["name"] %>
+                                      <%= @app_status["hostname"] %>
                                     </td>
                                   </tr>
-                                <% end %>
                               </tbody>
                             </table>
                           </div>
@@ -217,19 +221,20 @@
                                 </tr>
                               </thead>
                               <tbody class="bg-white divide-y divide-gray-200">
-                                <%= for pg <- @app["processGroups"] do %>
+
                                   <tr>
+                                  <%= for pg <- @app_status["allocations"] do %>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                      <%= pg["name"] %>
+                                      <%= pg["id"] %>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                      <%= pg["regions"] %>
+                                      <%= pg["version"] %>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                      <%= pg["vmSize"]["name"] %>
+                                      <%= @app_status["deploymentStatus"] %>
                                     </td>
+                                    <% end %>
                                   </tr>
-                                <% end %>
                               </tbody>
                             </table>
                           </div>
