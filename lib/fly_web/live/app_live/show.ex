@@ -7,15 +7,16 @@ defmodule FlyWeb.AppLive.Show do
 
   @impl true
   def mount(%{"name" => name}, session, socket) do
-    socket =
+  {:ok,  socket =
       assign(socket,
         config: client_config(session),
         state: :loading,
         app: nil,
+        app_status: nil,
         app_name: name,
         count: 0,
         authenticated: true
-      )
+      )}
 
     # Only make the API call if the websocket is setup. Not on initial render.
     if connected?(socket) do
@@ -34,7 +35,8 @@ defmodule FlyWeb.AppLive.Show do
 
     case Client.fetch_app(app_name, socket.assigns.config) do
       {:ok, app} ->
-        assign(socket, :app, app)
+        {:ok, app_status} = Client.fetch_status(app_name, socket.assigns.config)
+        assign(socket, app: app, app_status: app_status)
 
       {:error, :unauthorized} ->
         put_flash(socket, :error, "Not authenticated")
